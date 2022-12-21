@@ -1,7 +1,7 @@
 name: listview_infinite_pagination
 description: A very lite infinite scroll listview with pagination
-version: 0.0.1
-homepage:
+version: 0.0.01
+homepage: https://github.com/AmirHome/listview_infinite_pagination
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
