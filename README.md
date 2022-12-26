@@ -7,7 +7,7 @@ This plugin has been successfully tested on iOS, Android & web.
 # Examples
 The following examples are extracted from the example project available in the repository. More examples are available in this project.
 
-# Demo of Dropdown Searchable list with choices
+# Demo of infinite scroll listview with pagination
 
 ![listview_infinite_pagination](https://github.com/AmirHome/listview_infinite_pagination/blob/master/assets/demo_listview_infinite_pagination.gif)
 
