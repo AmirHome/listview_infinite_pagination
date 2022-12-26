@@ -34,16 +34,13 @@ We need to two steps to use this package.
 
           ListviewInfinitePagination<Post>(
             itemBuilder: (index, item) {
-              return Container(
-                color: Colors.yellow,
-                height: 48,
-                child: Text('$index => ${item.title}'),
+              return Text('$index => ${item.title}',
               );
             },
             dataFetcher: (page) => dataFetchMocha(page),
           ),
           
-          // ####### Data Sample Mocha
+          // ####### Data Sample Mocha Function dataFetchMocha
           Future<List<String>> dataFetchMocha(int page) async {
               List<String> testList = [];
               if (page < 4) {
@@ -60,16 +57,12 @@ We need to two steps to use this package.
 
           ListviewInfinitePagination<Post>(
             itemBuilder: (index, item) {
-              return Container(
-                color: Colors.yellow,
-                height: 48,
-                child: Text('$index => ${item}'),
-              );
+              return Text('$index => ${item}');
             },
             dataFetcher: (page) => dataFetchApi(page),
           ),
           
-          // ####### Data Sample Api
+          // ####### Data Sample Api Function dataFetchApi
           Future<List<Post>> dataFetchApi(int page) async {
               const String _baseUrl = 'https://jsonplaceholder.typicode.com/posts';
               List<Post> testList = [];
@@ -103,7 +96,7 @@ We need to two steps to use this package.
 | `_limit` | `int` |  Offset |
 
 
-```json
+```
 [
   { id: 1, title: '...' /* ... */ },
   { id: 2, title: '...' /* ... */ },
