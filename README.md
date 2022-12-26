@@ -29,7 +29,33 @@ We need to two steps to use this package.
 1. first step is to create a function to fetch data to use dataFetcher function.
 2. second step is to implement and design the listview to use itemBuilder function.
 
-### First Example Model with Data Sample Api
+### First Example Model Data Sample String List
+```dart
+
+          ListviewInfinitePagination<Post>(
+            itemBuilder: (index, item) {
+              return Container(
+                color: Colors.yellow,
+                height: 48,
+                child: Text('$index => ${item.title}'),
+              );
+            },
+            dataFetcher: (page) => dataFetchMocha(page),
+          ),
+          
+          // ####### Data Sample Mocha
+          Future<List<String>> dataFetchMocha(int page) async {
+              List<String> testList = [];
+              if (page < 4) {
+                for (int i = 1 + (page - 1) * 20; i <= page * 20; i++) {
+                  testList.add('Item$i of page$page');
+                }
+              }
+              return testList;
+          }
+```
+
+### Second Example Model with Data Sample Api
 ```dart
 
           ListviewInfinitePagination<Post>(
@@ -62,36 +88,10 @@ We need to two steps to use this package.
           }
 ```
 
-### Second Example Model Data Sample String List
-```dart
-
-          ListviewInfinitePagination<Post>(
-            itemBuilder: (index, item) {
-              return Container(
-                color: Colors.yellow,
-                height: 48,
-                child: Text('$index => ${item.title}'),
-              );
-            },
-            dataFetcher: (page) => dataFetchMocha(page),
-          ),
-          
-          // ####### Data Sample Mocha
-          Future<List<String>> dataFetchMocha(int page) async {
-              List<String> testList = [];
-              if (page < 4) {
-                for (int i = 1 + (page - 1) * 20; i <= page * 20; i++) {
-                  testList.add('Item$i of page$page');
-                }
-              }
-              return testList;
-          }
-```
-
-## API Reference
+#### API Reference
 - [Free fake API for testing and prototyping.](https://jsonplaceholder.typicode.com/)
 
-#### Get all items
+##### Get all items
 
 ```http
   GET /posts
