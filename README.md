@@ -26,8 +26,8 @@ The following examples are extracted from the example project available in the r
 ## Getting started and Usage
 
 We need to two steps to use this package.
-1. first step is to create a function to fetch data to use dataFetcher function.
-2. second step is to implement and design the listview to use itemBuilder function.
+1. First step is to create a function to fetch data to use dataFetcher function.
+2. Second step is to implement and design the listview to use itemBuilder function.
 
 ### First Example Model Data Sample String List
 ```dart
@@ -38,7 +38,7 @@ We need to two steps to use this package.
               );
             },
             dataFetcher: (page) => dataFetchMocha(page),
-          ),
+          )
           
           // ####### Data Sample Mocha Function dataFetchMocha
           Future<List<String>> dataFetchMocha(int page) async {
@@ -60,7 +60,7 @@ We need to two steps to use this package.
               return Text('$index => ${item}');
             },
             dataFetcher: (page) => dataFetchApi(page),
-          ),
+          )
           
           // ####### Data Sample Api Function dataFetchApi
           Future<List<Post>> dataFetchApi(int page) async {
@@ -82,11 +82,11 @@ We need to two steps to use this package.
 ```
 
 #### API Reference
-- [Free fake API for testing and prototyping.](https://jsonplaceholder.typicode.com/)
+- [Free fake API for testing and prototyping](https://jsonplaceholder.typicode.com/)
 
 ##### Get all items
 
-```http
+```
   GET /posts
 ```
 

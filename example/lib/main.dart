@@ -40,22 +40,31 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: const Text('Flutter Demo'),
+        backgroundColor: Colors.amber,
+        title: const Text('Demo Listview Infinite Pagination', style: TextStyle(color: Colors.black)),
       ),
       body: ListviewInfinitePagination<Post>(
         itemBuilder: (index, item) {
-          return Container(
-            color: Colors.yellow,
-            height: 48,
-            child: Text('$index => ${item.title}'),
+          return Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.image, size: 45),
+                  title: Text('#$index ${item.title}'),
+                  subtitle: Text(item.body!),
+                ),
+              ],
+            ),
           );
         },
         dataFetcher: (page) => dataFetchApi(page),
+
         // ######## Optional ########
-        onError: (dynamic error) => Center(
+        onError: (dynamic error) => const Center(
           child: Text('error'),
         ),
-        onEmpty: Center(
+        onEmpty: const Center(
           child: Text('This is empty'),
         ),
       ),
@@ -76,11 +85,11 @@ Future<List<String>> dataFetch(int page) async {
 }
 
 Future<List<Post>> dataFetchApi(int page) async {
-  const String _baseUrl = 'https://jsonplaceholder.typicode.com/posts';
+  const String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
   List<Post> testList = [];
 
   try {
-    final res = await http.get(Uri.parse("$_baseUrl?_page=$page&_limit=10"));
+    final res = await http.get(Uri.parse("$baseUrl?_page=$page&_limit=10"));
     json.decode(res.body).forEach((post) {
       testList.add(Post.fromJson(post));
     });
