@@ -9,7 +9,7 @@ The following examples are extracted from the example project available in the r
 
 # Demo of Dropdown Searchable list with choices
 
-![listview_infinite_pagination](https://github.com/AmirHome/listview_infinite_pagination/blob/master/assets/demo.gif)
+![listview_infinite_pagination](https://github.com/AmirHome/listview_infinite_pagination/blob/master/assets/demo_listview_infinite_pagination.gif)
 
 ## Features
 
