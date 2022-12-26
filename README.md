@@ -15,8 +15,13 @@ The following examples are extracted from the example project available in the r
 
 * [x] Infinite scroll listview.
 * [x] Automating Pagination
-* [x] Customizable listview item
-* [x] Customizable listview item separator
+* [x] Customizable listview item widget.
+* [x] Customizable listview initial loading widget.
+* [x] Customizable listview more loading widget.
+* [x] Customizable listview empty widget.
+* [x] Customizable listview error widget.
+* [x] Customizable listview when end of list is reached widget.
+
 
 ## Getting started and Usage
 
@@ -24,9 +29,8 @@ We need to two steps to use this package.
 1. first step is to create a function to fetch data to use dataFetcher function.
 2. second step is to implement and design the listview to use itemBuilder function.
 
+### First Example Model
 ```dart
-
-         
           // ################ First Example Model ################
           // ####### Posts List
           ListviewInfinitePagination<Post>(
@@ -57,7 +61,10 @@ We need to two steps to use this package.
               }
               return testList;
           }
-          
+```
+
+### Second Example Model
+```dart
 
           // ################ Second Example Model ################
           // ####### String List
@@ -82,6 +89,31 @@ We need to two steps to use this package.
               }
               return testList;
           }
+```
+
+## API Reference
+- [Free fake API for testing and prototyping.](https://jsonplaceholder.typicode.com/)
+
+#### Get all items
+
+```http
+  GET /posts
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `_page` | `int` |  Pagination |
+| `_limit` | `int` |  Offset |
+
+
+```json
+[
+  { id: 1, title: '...' /* ... */ },
+  { id: 2, title: '...' /* ... */ },
+  { id: 3, title: '...' /* ... */ },
+  /* ... */
+  { id: 100, title: '...' /* ... */ },
+];
 ```
 
 ## Additional information

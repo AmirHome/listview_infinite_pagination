@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'initial_loader.dart';
 import 'load_more_loader.dart';
+import 'on_empty.dart';
+import 'on_finished.dart';
+import 'on_error.dart';
 
 /// Signature for a function that returns a Future List of type 'T' i.e. list
 /// of items in a particular page that is being asynchronously called.
@@ -38,6 +41,12 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   /// Handle error returned by the Future implemented in [dataFetcher]
   final Function(dynamic error)? onError;
 
+  /// Handle error returned by the Future implemented in [dataFetcher]
+  final Widget? onEmpty;
+
+  /// Handle error returned by the Future implemented in [dataFetcher]
+  final Widget onFinished;
+
   /// When non-null [progress] widget is called to show loading progress
   final Widget initialLoader;
 
@@ -66,8 +75,10 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
     required this.itemBuilder,
     this.initialLoader = const InitialLoader(),
     this.loadMoreLoader = const LoadMoreLoader(),
-    this.scrollDirection = Axis.vertical,
     this.onError,
+    this.onEmpty = const OnEmpty(),
+    this.onFinished = const OnFinished(),
+    this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
     this.primary,
@@ -181,14 +192,7 @@ class _ListviewInfinitePagination<T>
                   ),
                   // start load more loading data
                   if (_moreFetchLoading) widget.loadMoreLoader,
-                  if (_lastPage)
-                    Container(
-                      padding: const EdgeInsets.only(top: 9, bottom: 9),
-                      color: Colors.amber,
-                      child: const Center(
-                        child: Text('You have fetched all of the content'),
-                      ),
-                    ),
+                  if (_lastPage) widget.onFinished,
                 ],
               ));
   }
