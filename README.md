@@ -29,10 +29,9 @@ We need to two steps to use this package.
 1. first step is to create a function to fetch data to use dataFetcher function.
 2. second step is to implement and design the listview to use itemBuilder function.
 
-### First Example Model
+### First Example Model with Data Sample Api
 ```dart
-          // ################ First Example Model ################
-          // ####### Posts List
+
           ListviewInfinitePagination<Post>(
             itemBuilder: (index, item) {
               return Container(
@@ -63,11 +62,9 @@ We need to two steps to use this package.
           }
 ```
 
-### Second Example Model
+### Second Example Model Data Sample String List
 ```dart
 
-          // ################ Second Example Model ################
-          // ####### String List
           ListviewInfinitePagination<Post>(
             itemBuilder: (index, item) {
               return Container(
