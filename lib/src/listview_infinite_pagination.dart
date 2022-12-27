@@ -62,6 +62,9 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   final double? itemExtent;
   final bool addAutomaticKeepAlives = true;
   final bool addRepaintBoundaries = true;
+
+  /// Pull To Refresh Indicator
+  final bool toRefresh;
   final bool addSemanticIndexes = true;
   final double? cacheExtent;
   final int? semanticChildCount;
@@ -83,6 +86,7 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
     this.controller,
     this.primary,
     this.physics,
+    this.toRefresh = false,
     this.padding,
     this.itemExtent,
     this.cacheExtent,
@@ -118,121 +122,135 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
 
 class _ListviewInfinitePagination<T>
     extends State<ListviewInfinitePagination<T>> {
-  final List<T> _items = [];
+  List<T> _items = [];
   int _page = 0;
   bool _initFetchLoading = false;
   bool _moreFetchLoading = false;
   bool _lastPage = false;
+  var _error;
 
   // late ScrollController _scrollController;
 
   @override
   void initState() {
-    _moreFetch();
-    // Set up a scroll controller to listen for scroll events
-    // _scrollController = widget.scrollController ?? ScrollController();
+    /// Fetch first page
+    moreFetch();
+
+    /// Set up a scroll controller to listen for scroll events
+    /// _scrollController = widget.scrollController ?? ScrollController();
     super.initState();
   }
-
-/*  @override
-  void didChangeDependencies() {
-    // _scrollController = ScrollController()..addListener(moreFetch);
-    // Listen to scroll events to trigger more fetch
-    _scrollController.addListener(() {
-      var nextPageTrigger = _scrollController.position.maxScrollExtent;
-      // If we are at the end of the list, fetch more items
-      if (_scrollController.position.pixels == nextPageTrigger && !_moreFetchLoading && !_lastPage) {
-        moreFetch();
-      }
-    });
-    super.didChangeDependencies();
-  }*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: _initFetchLoading
-            ? widget.initialLoader
-            : Column(
-                children: [
-                  // start initial loading data
-                  if (_initFetchLoading) widget.initialLoader,
-                  Expanded(
-                    child: NotificationListener<ScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification is ScrollEndNotification &&
-                              notification.metrics.extentAfter == 0 &&
-                              !_moreFetchLoading &&
-                              !_lastPage) {
-                            _moreFetch();
-                          }
-                          return true;
-                        },
-                        child: ListView.builder(
-                          padding: widget.padding,
-                          // controller: _scrollController,
-                          physics: widget.physics,
-                          primary: widget.primary,
-                          reverse: widget.reverse,
-                          shrinkWrap: widget.shrinkWrap,
-                          itemExtent: widget.itemExtent,
-                          cacheExtent: widget.cacheExtent,
-                          addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-                          addRepaintBoundaries: widget.addRepaintBoundaries,
-                          addSemanticIndexes: widget.addSemanticIndexes,
-                          scrollDirection: widget.scrollDirection,
-                          itemCount: _items.length,
-                          itemBuilder: (context, index) {
-                            // if (index < _items.length) {
-                            return widget.itemBuilder(index, _items[index]);
-                            // }
-                            return const SizedBox();
-                          },
-                        )),
-                  ),
-                  // start load more loading data
-                  if (_moreFetchLoading) widget.loadMoreLoader,
-                  if (_lastPage) widget.onFinished,
-                ],
-              ));
+        body: Column(
+      children: [
+        /// start initial loading data
+        if (_initFetchLoading) widget.initialLoader,
+        Expanded(
+          /// Listen to scroll events to trigger more fetch
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification is ScrollEndNotification &&
+                  notification.metrics.extentAfter == 0 &&
+                  !_moreFetchLoading &&
+                  !_lastPage) {
+                /// Fetch more data
+                moreFetch(init: false);
+              }
+              return true;
+            },
+
+            /// Build ListView with items
+            child: widget.toRefresh
+                ? RefreshIndicator(
+                    /// Fetch first page
+                    onRefresh: moreFetch,
+                    child: _buildListView(),
+                  )
+                : _buildListView(),
+          ),
+        ),
+
+        /// start load more loading data
+        if (_moreFetchLoading) widget.loadMoreLoader,
+
+        /// show on finished widget
+        if (_lastPage) widget.onFinished,
+        if (_error != null) widget.onError!(_error),
+      ],
+    ));
   }
 
-  void _moreFetch() {
-    if (!_moreFetchLoading && !_initFetchLoading) {
-      // Next page Increase _page by 1
-      _page += 1;
+  ListView _buildListView() {
+    return ListView.builder(
+      padding: widget.padding,
 
-      // Control Initial
+      /// controller: _scrollController,
+      physics: widget.physics,
+      primary: widget.primary,
+      reverse: widget.reverse,
+      shrinkWrap: widget.shrinkWrap,
+      itemExtent: widget.itemExtent,
+      cacheExtent: widget.cacheExtent,
+      addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+      addRepaintBoundaries: widget.addRepaintBoundaries,
+      addSemanticIndexes: widget.addSemanticIndexes,
+      scrollDirection: widget.scrollDirection,
+      itemCount: _items.length,
+
+      /// Build item widget
+      itemBuilder: (context, index) {
+        return widget.itemBuilder(index, _items[index]);
+      },
+    );
+  }
+
+  Future<void> moreFetch({bool init = true}) async {
+    if (!_moreFetchLoading && !_initFetchLoading) {
+      /// Next page Increase _page by 1
+      /// if init is true then _page = 1
+      _page = init ? 1 : _page + 1;
+
+      /// Control Initial
       setState(() {
-        // Start loading
+        /// Start loading
         _initFetchLoading = (_page == 1);
-        // Display a progress indicator at the bottom of the list
+
+        /// Display a progress indicator at the bottom of the list
         _moreFetchLoading = !_initFetchLoading;
       });
 
-      widget.dataFetcher(_page).then((list) {
-        setState(() {
-          // Stop loading
-          _initFetchLoading = false;
-          _moreFetchLoading = false;
-        });
-        // Check if last page
-        if (list.isEmpty) {
+      /// Fetch data
+      List<T> list = [];
+      try {
+        list = await widget.dataFetcher(_page);
+      } catch (error) {
+        _error = error;
+        //setState(() => _error = error);
+        /// when debug mode print error in console
+        if (kDebugMode) {
+          print('Something went wrong');
+        }
+      }
+
+      setState(() {
+        /// Check if last page
+        if (list.isEmpty && _error == null) {
           setState(() => _lastPage = true);
         }
-        // Add new items
-        setState(() => _items.addAll(list));
-      }).catchError((error) {
-        setState(() {
-          // Stop loading
-          _initFetchLoading = false;
-          _moreFetchLoading = false;
-          // _lastPage = false;
-        });
 
-        if (widget.onError != null) {
-          widget.onError!(error);
+        /// Add items to list
+        if (init) {
+          _items = list;
+        } else {
+          _items.addAll(list);
         }
+
+        /// Stop loading
+        _initFetchLoading = false;
+        _moreFetchLoading = false;
       });
     }
   }

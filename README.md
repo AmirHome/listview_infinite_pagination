@@ -21,6 +21,7 @@ The following examples are extracted from the example project available in the r
 * [x] Customizable listview empty widget.
 * [x] Customizable listview error widget.
 * [x] Customizable listview when end of list is reached widget.
+* [x] To Refresh listview.
 
 
 ## Getting started and Usage

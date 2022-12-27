@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:listview_infinite_pagination/listview_infinite_pagination.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:listview_infinite_pagination/listview_infinite_pagination.dart';
 
 // Create a new Dart file in model folder and name it post.dart
 // Copy the following code in bottom of this file
@@ -41,7 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         backgroundColor: Colors.amber,
-        title: const Text('Demo Listview Infinite Pagination', style: TextStyle(color: Colors.black)),
+        title: const Text('Demo Listview Infinite Pagination',
+            style: TextStyle(color: Colors.black)),
       ),
       body: ListviewInfinitePagination<Post>(
         itemBuilder: (index, item) {
@@ -61,20 +60,25 @@ class _MyHomePageState extends State<MyHomePage> {
         dataFetcher: (page) => dataFetchApi(page),
 
         // ######## Optional ########
-        onError: (dynamic error) => const Center(
-          child: Text('error'),
-        ),
-        onEmpty: const Center(
-          child: Text('This is empty'),
-        ),
-      ),
+        /// If you want to refresh and reset the listview
+        //toRefresh: true,
 
+        /// If you want to show a custom error widget
+        // onError: (dynamic error) => Center(
+        //   child: Text(error.toString()),
+        // ),
+
+        /// If you want to show a custom empty widget
+        // onEmpty: const Center(
+        //   child: Text('This is empty'),
+        // ),
+      ),
     );
   }
 }
 
 Future<List<String>> dataFetch(int page) async {
-  await Future.delayed(Duration(seconds: 0, milliseconds: 2000));
+  await Future.delayed(const Duration(seconds: 0, milliseconds: 2000));
   List<String> testList = [];
   if (page < 4) {
     for (int i = 1 + (page - 1) * 20; i <= page * 20; i++) {
@@ -88,16 +92,10 @@ Future<List<Post>> dataFetchApi(int page) async {
   const String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
   List<Post> testList = [];
 
-  try {
-    final res = await http.get(Uri.parse("$baseUrl?_page=$page&_limit=10"));
-    json.decode(res.body).forEach((post) {
-      testList.add(Post.fromJson(post));
-    });
-  } catch (err) {
-    if (kDebugMode) {
-      print('Something went wrong');
-    }
-  }
+  final res = await http.get(Uri.parse("$baseUrl?_page=$page&_limit=10"));
+  json.decode(res.body).forEach((post) {
+    testList.add(Post.fromJson(post));
+  });
 
   return testList;
 }
