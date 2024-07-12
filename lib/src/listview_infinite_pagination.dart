@@ -5,7 +5,6 @@ import 'initial_loader.dart';
 import 'load_more_loader.dart';
 import 'on_empty.dart';
 import 'on_finished.dart';
-import 'on_error.dart';
 
 /// Signature for a function that returns a Future List of type 'T' i.e. list
 /// of items in a particular page that is being asynchronously called.

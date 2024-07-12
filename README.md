@@ -9,7 +9,7 @@ The following examples are extracted from the example project available in the r
 
 # Demo of infinite scroll listview with pagination
 
-![listview_infinite_pagination](https://github.com/AmirHome/listview_infinite_pagination/blob/master/assets/demo_listview_infinite_pagination.gif)
+![listview_infinite_pagination](https://raw.githubusercontent.com/AmirHome/listview_infinite_pagination/master/assets/demo_listview_infinite_pagination.gif)
 
 ## Features
 
