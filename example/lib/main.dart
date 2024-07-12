@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         // ######## Optional ########
         /// If you want to refresh and reset the listview
-        //toRefresh: true,
+        toRefresh: true,
 
         /// If you want to show a custom error widget
         // onError: (dynamic error) => Center(
