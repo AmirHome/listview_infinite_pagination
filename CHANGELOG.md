@@ -1,3 +1,8 @@
+## 0.0.16
+
+* Reset after sorting, filtering or searching
+* Example 2 for sorting and filtering (you can use it for search too)
+
 ## 0.0.15
 
 * Renew for Flutter last version
