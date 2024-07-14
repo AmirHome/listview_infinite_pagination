@@ -24,6 +24,7 @@ typedef ItemWidgetBuilder<T> = Widget Function(int index, T item);
 ///
 /// [itemBuilder] creates widget instances on demand.
 class ListviewInfinitePagination<T> extends StatefulWidget {
+
   /// Called when the list scrolls to an end
   ///
   /// Function should return Future List of type 'T'
@@ -114,13 +115,16 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
 
   get scrollController => null;
 
+  // @override
+  // State<ListviewInfinitePagination> createState() =>
+  //     _ListviewInfinitePagination();
+
   @override
-  State<ListviewInfinitePagination> createState() =>
-      _ListviewInfinitePagination();
+  State<ListviewInfinitePagination> createState() => ListviewInfinitePaginationState<T>();
 }
 
-class _ListviewInfinitePagination<T>
-    extends State<ListviewInfinitePagination<T>> {
+class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePagination<T>> {
+
   List<T> _items = [];
   int _page = 0;
   bool _initFetchLoading = false;
@@ -133,11 +137,30 @@ class _ListviewInfinitePagination<T>
   @override
   void initState() {
     /// Fetch first page
-    moreFetch();
+    // moreFetch();
 
     /// Set up a scroll controller to listen for scroll events
     /// _scrollController = widget.scrollController ?? ScrollController();
     super.initState();
+    _initialize();
+  }
+
+  void _initialize() {
+    _items = [];
+    _page = 0;
+    _initFetchLoading = false;
+    _moreFetchLoading = false;
+    _lastPage = false;
+    _error = null;
+
+    /// Fetch first page
+    moreFetch();
+  }
+
+  void reset() {
+    setState(() {
+      _initialize();
+    });
   }
 
   @override

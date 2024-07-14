@@ -50,8 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.image, size: 45),
-                  title: Text('#$index ${item.title}'),
-                  subtitle: Text(item.body!),
+                  title: Text('#${item.id} ${item.title}'),
+                  subtitle: Text('${item.body!} - index $index'),
                 ),
               ],
             ),
