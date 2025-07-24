@@ -1,3 +1,8 @@
+## 0.1.02
+
+* Renew for Flutter last version
+* Example 2 for sorting
+
 ## 0.0.16
 
 * Reset after sorting, filtering or searching
