@@ -39,8 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         backgroundColor: Colors.amber,
-        title: const Text('Demo Listview Infinite Pagination',
-            style: TextStyle(color: Colors.black)),
+        title: const Text('Demo Listview Infinite Pagination', style: TextStyle(color: Colors.black)),
       ),
       body: ListviewInfinitePagination<Post>(
         itemBuilder: (index, item) {
@@ -92,10 +91,25 @@ Future<List<Post>> dataFetchApi(int page) async {
   const String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
   List<Post> testList = [];
 
-  final res = await http.get(Uri.parse("$baseUrl?_page=$page&_limit=10"));
-  json.decode(res.body).forEach((post) {
-    testList.add(Post.fromJson(post));
-  });
+  try {
+    final res = await http.get(
+      Uri.parse("$baseUrl?_page=$page&_limit=10&_sort=id&_order=desc"),
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (res.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(res.body);
+      testList = jsonList.map((post) => Post.fromJson(post)).toList();
+    } else {
+      print('Error: Status Code ${res.statusCode}');
+      print('Response: ${res.body}');
+    }
+  } catch (e) {
+    print('Exception occurred: $e');
+  }
 
   return testList;
 }

@@ -134,75 +134,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Future<List<String>> dataFetch(int page) async {
-  await Future.delayed(const Duration(seconds: 0, milliseconds: 2000));
-  List<String> testList = [];
-  if (page < 4) {
-    for (int i = 1 + (page - 1) * 20; i <= page * 20; i++) {
-      testList.add('Item$i in page$page');
-    }
-  }
-  return testList;
-}
-
-Future<List<Post>> dataFetchApi(int page, [String sortQuery=''] ) async {
+Future<List<Post>> dataFetchApi(int page, [String sortQuery='id']) async {
   const String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
   List<Post> testList = [];
 
-  final res = await http.get(Uri.parse("$baseUrl?_page=$page&_limit=10&_sort=$sortQuery&_order=desc"));
-  json.decode(res.body).forEach((post) {
-    testList.add(Post.fromJson(post));
-  });
+  try {
+    final res = await http.get(
+      Uri.parse("$baseUrl?_page=$page&_limit=10&_sort=$sortQuery&_order=desc"),
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (res.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(res.body);
+      testList = jsonList.map((post) => Post.fromJson(post)).toList();
+    } else {
+      print('Error: Status Code ${res.statusCode}');
+      print('Response: ${res.body}');
+    }
+  } catch (e) {
+    print('Exception occurred: $e');
+  }
 
   return testList;
 }
-
-/*
-* Create a new Dart file in model folder and name it post.dart
-class Post {
-  int? _userId;
-  int? _id;
-  String? _title;
-  String? _body;
-
-  Post({int? userId, int? id, String? title, String? body}) {
-    if (userId != null) {
-      this._userId = userId;
-    }
-    if (id != null) {
-      this._id = id;
-    }
-    if (title != null) {
-      this._title = title;
-    }
-    if (body != null) {
-      this._body = body;
-    }
-  }
-
-  int? get userId => _userId;
-  set userId(int? userId) => _userId = userId;
-  int? get id => _id;
-  set id(int? id) => _id = id;
-  String? get title => _title;
-  set title(String? title) => _title = title;
-  String? get body => _body;
-  set body(String? body) => _body = body;
-
-  Post.fromJson(Map<String, dynamic> json) {
-    _userId = json['userId'];
-    _id = json['id'];
-    _title = json['title'];
-    _body = json['body'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userId'] = this._userId;
-    data['id'] = this._id;
-    data['title'] = this._title;
-    data['body'] = this._body;
-    return data;
-  }
-}
-* */

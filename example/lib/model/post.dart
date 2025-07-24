@@ -6,16 +6,16 @@ class Post {
 
   Post({int? userId, int? id, String? title, String? body}) {
     if (userId != null) {
-      this._userId = userId;
+      _userId = userId;
     }
     if (id != null) {
-      this._id = id;
+      _id = id;
     }
     if (title != null) {
-      this._title = title;
+      _title = title;
     }
     if (body != null) {
-      this._body = body;
+      _body = body;
     }
   }
 
@@ -36,11 +36,11 @@ class Post {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userId'] = this._userId;
-    data['id'] = this._id;
-    data['title'] = this._title;
-    data['body'] = this._body;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['userId'] = _userId;
+    data['id'] = _id;
+    data['title'] = _title;
+    data['body'] = _body;
     return data;
   }
 }

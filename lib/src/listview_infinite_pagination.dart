@@ -73,7 +73,7 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   ///
   /// The arguments [dataFetcher], [itemBuilder] must not be null.
   const ListviewInfinitePagination({
-    Key? key,
+    super.key,
     required this.dataFetcher,
     required this.itemBuilder,
     this.initialLoader = const InitialLoader(),
@@ -111,7 +111,7 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
     // super.keyboardDismissBehavior,
     // super.restorationId,
     // super.clipBehavior,
-  }) : super(key: key);
+  });
 
   get scrollController => null;
 

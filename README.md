@@ -108,9 +108,13 @@ We need to two steps to use this package.
 ```
 
 ## Additional information
+```
+    init_number=0; build_number=$(($(git rev-list HEAD --count) + init_number)); major=$((build_number / 2000)); minor=$(( (build_number / 20) % 10 )); patch=$((build_number % 20)); patch=$(printf "%02d" $patch); version="$major.$minor.$patch"; echo "version: $version+$build_number"
 
-
-
+    flutter upgrade
+    flutter pub upgrade && flutter clean && flutter pub get
+    flutter fix --apply && flutter analyze
+```
 
 # LICENSE!
 

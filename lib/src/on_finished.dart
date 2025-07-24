@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OnFinished extends StatelessWidget {
-  const OnFinished({Key? key}) : super(key: key);
+  const OnFinished({super.key});
 
   @override
   Widget build(BuildContext context) {

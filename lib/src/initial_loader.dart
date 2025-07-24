@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class InitialLoader extends StatelessWidget {
-  const InitialLoader({Key? key}) : super(key: key);
+  const InitialLoader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LinearProgressIndicator(
+    return const LinearProgressIndicator(
       value: null,
       backgroundColor: Colors.white,
       // valueColor: AlwaysStoppedAnimation<Color>(PaletteColors.initial)
