@@ -112,6 +112,10 @@ We need to two steps to use this package.
     init_number=0; build_number=$(($(git rev-list HEAD --count) + init_number)); major=$((build_number / 2000)); minor=$(( (build_number / 20) % 10 )); patch=$((build_number % 20)); patch=$(printf "%02d" $patch); version="$major.$minor.$patch"; echo "version: $version+$build_number"
 
     flutter upgrade
+    cd android
+    ./gradlew --refresh-dependencies
+    
+    cd ..
     flutter pub upgrade --major-versions && flutter clean && flutter pub get
     dart fix --apply && flutter analyze
 ```
