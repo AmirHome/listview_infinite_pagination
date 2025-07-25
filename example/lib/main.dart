@@ -108,7 +108,8 @@ Future<List<Post>> dataFetchApi(int page) async {
       print('Response: ${res.body}');
     }
   } catch (e) {
-    print('Exception occurred: $e');
+    
+    ('Exception occurred: $e');
   }
 
   return testList;
