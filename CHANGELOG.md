@@ -1,3 +1,7 @@
+## 0.1.09
+
+* Improve widget testing
+
 ## 0.1.08
 
 * Add new properties for enhanced list view customization

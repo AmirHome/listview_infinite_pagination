@@ -14,7 +14,6 @@ import 'on_finished.dart';
 typedef DataFetcherPagination<T> = Future<List<T>> Function(int currentListSize);
 
 /// Signature for a function that creates a widget for a given item of type 'T'.
-// typedef ItemWidgetBuilder<T> = Widget Function(int index, T item);
 typedef ItemWidgetBuilder<T> = Widget Function(int index, T item);
 
 /// A scrollable view list which implements pagination.
@@ -27,7 +26,7 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   /// Called when the list scrolls to an end
   ///
   /// Function should return Future List of type 'T'
-  final DataFetcherPagination<T> dataFetcher; //dataFetch
+  final DataFetcherPagination<T> dataFetcher;
 
   /// Called to build children for [Pagination]
   ///
@@ -46,10 +45,10 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   /// Displays when a later page fetch returns no data.
   final Widget onFinished;
 
-  /// When non-null [progress] widget is called to show loading progress
+  /// Widget shown during the first fetch.
   final Widget initialLoader;
 
-  /// When non-null [progress] widget is called to show loading progress
+  /// Widget shown while loading additional items.
   final Widget loadMoreLoader;
 
   /// Whether to reverse the list order.
@@ -123,15 +122,8 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
   bool _isEmpty = false;
   Object? _error;
 
-  // late ScrollController _scrollController;
-
   @override
   void initState() {
-    /// Fetch first page
-    // moreFetch();
-
-    /// Set up a scroll controller to listen for scroll events
-    /// _scrollController = widget.scrollController ?? ScrollController();
     super.initState();
     _initialize();
   }
@@ -252,10 +244,10 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
       });
 
       /// Fetch data
-      List<T> list = [];
+      List<T> fetchedItems = <T>[];
       try {
         _error = null;
-        list = await widget.dataFetcher(_page);
+        fetchedItems = await widget.dataFetcher(_page);
       } catch (error) {
         _error = error;
 
@@ -272,7 +264,7 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
       setState(() {
         if (_error == null) {
           /// First page empty => show empty state.
-          if (list.isEmpty && _page == 1) {
+          if (fetchedItems.isEmpty && _page == 1) {
             _isEmpty = true;
             _lastPage = false;
             _items = [];
@@ -280,15 +272,15 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
             _isEmpty = false;
 
             /// Later page empty => reached end of data.
-            if (list.isEmpty) {
+            if (fetchedItems.isEmpty) {
               _lastPage = true;
             }
 
             /// Add items to list
             if (init) {
-              _items = list;
+              _items = fetchedItems;
             } else {
-              _items.addAll(list);
+              _items.addAll(fetchedItems);
             }
           }
         }
