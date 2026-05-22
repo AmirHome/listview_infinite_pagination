@@ -11,8 +11,7 @@ import 'on_finished.dart';
 /// of items in a particular page that is being asynchronously called.
 ///
 /// Used by [Pagination] widget.
-typedef DataFetcherPagination<T> = Future<List<T>> Function(
-    int currentListSize);
+typedef DataFetcherPagination<T> = Future<List<T>> Function(int currentListSize);
 
 /// Signature for a function that creates a widget for a given item of type 'T'.
 // typedef ItemWidgetBuilder<T> = Widget Function(int index, T item);
@@ -25,7 +24,6 @@ typedef ItemWidgetBuilder<T> = Widget Function(int index, T item);
 ///
 /// [itemBuilder] creates widget instances on demand.
 class ListviewInfinitePagination<T> extends StatefulWidget {
-
   /// Called when the list scrolls to an end
   ///
   /// Function should return Future List of type 'T'
@@ -119,7 +117,6 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
 }
 
 class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePagination<T>> {
-
   List<T> _items = [];
   int _page = 0;
   bool _initFetchLoading = false;
@@ -174,8 +171,8 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
               if (notification is ScrollEndNotification &&
                   notification.metrics.extentAfter == 0 &&
                   !_moreFetchLoading &&
-                !_lastPage &&
-                !_isEmpty) {
+                  !_lastPage &&
+                  !_isEmpty) {
                 /// Fetch more data
                 moreFetch(init: false);
               }
@@ -187,9 +184,9 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
                 ? RefreshIndicator(
                     /// Fetch first page
                     onRefresh: moreFetch,
-                      child: _isEmpty ? _buildEmptyView() : _buildListView(),
+                    child: _isEmpty ? _buildEmptyView() : _buildListView(),
                   )
-                  : (_isEmpty ? _buildEmptyView() : _buildListView()),
+                : (_isEmpty ? _buildEmptyView() : _buildListView()),
           ),
         ),
 
@@ -198,8 +195,7 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
 
         /// show on finished widget
         if (_lastPage) widget.onFinished,
-          if (_error != null)
-            widget.onError?.call(_error!) ?? const OnError(),
+        if (_error != null) widget.onError?.call(_error!) ?? const OnError(),
       ],
     ));
   }
@@ -260,6 +256,7 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
         list = await widget.dataFetcher(_page);
       } catch (error) {
         _error = error;
+
         /// when debug mode print error in console
         if (kDebugMode) {
           print('Something went wrong');
