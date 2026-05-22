@@ -32,7 +32,7 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   /// Called to build children for [Pagination]
   ///
   /// Function should return a widget
-  final ItemWidgetBuilder itemBuilder;
+  final ItemWidgetBuilder<T> itemBuilder;
 
   /// Scroll direction of list view
   final Axis scrollDirection;
@@ -52,19 +52,32 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   /// When non-null [progress] widget is called to show loading progress
   final Widget loadMoreLoader;
 
+  /// Whether to reverse the list order.
   final bool reverse;
+
+  /// Scroll controller used by this list view.
   final ScrollController? controller;
+
+  /// Whether this scroll view is the primary scroll view in the parent.
   final bool? primary;
+
+  /// Scroll physics applied to the list view.
   final ScrollPhysics? physics;
-  final bool shrinkWrap = false;
+
+  /// Whether the extent of the scroll view should be determined by content.
+  final bool shrinkWrap;
+
+  /// Whether this widget should wrap content with [Scaffold].
+  final bool wrapWithScaffold;
+
   final EdgeInsetsGeometry? padding;
   final double? itemExtent;
-  final bool addAutomaticKeepAlives = true;
-  final bool addRepaintBoundaries = true;
+  final bool addAutomaticKeepAlives;
+  final bool addRepaintBoundaries;
 
   /// Pull To Refresh Indicator
   final bool toRefresh;
-  final bool addSemanticIndexes = true;
+  final bool addSemanticIndexes;
   final double? cacheExtent;
   final int? semanticChildCount;
 
@@ -85,31 +98,16 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
     this.controller,
     this.primary,
     this.physics,
+    this.shrinkWrap = false,
+    this.wrapWithScaffold = false,
     this.toRefresh = false,
     this.padding,
     this.itemExtent,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
     this.cacheExtent,
     this.semanticChildCount,
-    // super.key,
-    // super.scrollDirection,
-    // super.reverse,
-    // super.controller,
-    // super.primary,
-    // super.physics,
-    // super.shrinkWrap,
-    // super.padding,
-    // this.itemExtent,
-    // this.prototypeItem,
-    // bool addAutomaticKeepAlives = true,
-    // bool addRepaintBoundaries = true,
-    // bool addSemanticIndexes = true,
-    // super.cacheExtent,
-    // List<Widget> children = const <Widget>[],
-    // int? semanticChildCount,
-    // super.dragStartBehavior,
-    // super.keyboardDismissBehavior,
-    // super.restorationId,
-    // super.clipBehavior,
   });
 
   @override
@@ -159,8 +157,7 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
+    final content = Column(
       children: [
         /// start initial loading data
         if (_initFetchLoading) widget.initialLoader,
@@ -197,7 +194,13 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
         if (_lastPage) widget.onFinished,
         if (_error != null) widget.onError?.call(_error!) ?? const OnError(),
       ],
-    ));
+    );
+
+    if (widget.wrapWithScaffold) {
+      return Scaffold(body: content);
+    }
+
+    return content;
   }
 
   Widget _buildEmptyView() {
@@ -213,8 +216,7 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
   ListView _buildListView() {
     return ListView.builder(
       padding: widget.padding,
-
-      /// controller: _scrollController,
+      controller: widget.controller,
       physics: widget.physics,
       primary: widget.primary,
       reverse: widget.reverse,

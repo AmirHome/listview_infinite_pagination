@@ -1,4 +1,9 @@
+## 0.1.08
+
+* Add new properties for enhanced list view customization
+
 ## 0.1.06
+
 * Enhance error handling and empty state display
 
 ## 0.1.02
