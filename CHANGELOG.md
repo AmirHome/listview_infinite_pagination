@@ -1,6 +1,7 @@
-## 0.1.09
+## 0.1.9
 
-* Improve widget testing
+* Make the pagination widget more reusable and safe
+* Add widget tests for success, empty, error, and controller wiring
 
 ## 0.1.08
 
