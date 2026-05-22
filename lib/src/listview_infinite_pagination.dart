@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'initial_loader.dart';
 import 'load_more_loader.dart';
 import 'on_empty.dart';
+import 'on_error.dart';
 import 'on_finished.dart';
 
 /// Signature for a function that returns a Future List of type 'T' i.e. list
@@ -38,13 +39,13 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
   /// Scroll direction of list view
   final Axis scrollDirection;
 
-  /// Handle error returned by the Future implemented in [dataFetcher]
-  final Function(dynamic error)? onError;
+  /// Builds an error widget when [dataFetcher] throws.
+  final Widget Function(Object error)? onError;
 
-  /// Handle error returned by the Future implemented in [dataFetcher]
-  final Widget? onEmpty;
+  /// Displays when the first page has no data.
+  final Widget onEmpty;
 
-  /// Handle error returned by the Future implemented in [dataFetcher]
+  /// Displays when a later page fetch returns no data.
   final Widget onFinished;
 
   /// When non-null [progress] widget is called to show loading progress
@@ -113,12 +114,6 @@ class ListviewInfinitePagination<T> extends StatefulWidget {
     // super.clipBehavior,
   });
 
-  get scrollController => null;
-
-  // @override
-  // State<ListviewInfinitePagination> createState() =>
-  //     _ListviewInfinitePagination();
-
   @override
   State<ListviewInfinitePagination> createState() => ListviewInfinitePaginationState<T>();
 }
@@ -130,7 +125,8 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
   bool _initFetchLoading = false;
   bool _moreFetchLoading = false;
   bool _lastPage = false;
-  var _error;
+  bool _isEmpty = false;
+  Object? _error;
 
   // late ScrollController _scrollController;
 
@@ -151,6 +147,7 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
     _initFetchLoading = false;
     _moreFetchLoading = false;
     _lastPage = false;
+    _isEmpty = false;
     _error = null;
 
     /// Fetch first page
@@ -177,7 +174,8 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
               if (notification is ScrollEndNotification &&
                   notification.metrics.extentAfter == 0 &&
                   !_moreFetchLoading &&
-                  !_lastPage) {
+                !_lastPage &&
+                !_isEmpty) {
                 /// Fetch more data
                 moreFetch(init: false);
               }
@@ -189,9 +187,9 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
                 ? RefreshIndicator(
                     /// Fetch first page
                     onRefresh: moreFetch,
-                    child: _buildListView(),
+                      child: _isEmpty ? _buildEmptyView() : _buildListView(),
                   )
-                : _buildListView(),
+                  : (_isEmpty ? _buildEmptyView() : _buildListView()),
           ),
         ),
 
@@ -200,9 +198,20 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
 
         /// show on finished widget
         if (_lastPage) widget.onFinished,
-        if (_error != null) widget.onError!(_error),
+          if (_error != null)
+            widget.onError?.call(_error!) ?? const OnError(),
       ],
     ));
+  }
+
+  Widget _buildEmptyView() {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: SizedBox(
+        height: 200,
+        child: Center(child: widget.onEmpty),
+      ),
+    );
   }
 
   ListView _buildListView() {
@@ -247,27 +256,42 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
       /// Fetch data
       List<T> list = [];
       try {
+        _error = null;
         list = await widget.dataFetcher(_page);
       } catch (error) {
         _error = error;
-        //setState(() => _error = error);
         /// when debug mode print error in console
         if (kDebugMode) {
           print('Something went wrong');
         }
       }
 
-      setState(() {
-        /// Check if last page
-        if (list.isEmpty && _error == null) {
-          setState(() => _lastPage = true);
-        }
+      if (!mounted) {
+        return;
+      }
 
-        /// Add items to list
-        if (init) {
-          _items = list;
-        } else {
-          _items.addAll(list);
+      setState(() {
+        if (_error == null) {
+          /// First page empty => show empty state.
+          if (list.isEmpty && _page == 1) {
+            _isEmpty = true;
+            _lastPage = false;
+            _items = [];
+          } else {
+            _isEmpty = false;
+
+            /// Later page empty => reached end of data.
+            if (list.isEmpty) {
+              _lastPage = true;
+            }
+
+            /// Add items to list
+            if (init) {
+              _items = list;
+            } else {
+              _items.addAll(list);
+            }
+          }
         }
 
         /// Stop loading

@@ -112,6 +112,7 @@ We need to two steps to use this package.
     init_number=0; build_number=$(($(git rev-list HEAD --count) + init_number)); major=$((build_number / 2000)); minor=$(( (build_number / 20) % 10 )); patch=$((build_number % 20)); patch=$(printf "%02d" $patch); version="$major.$minor.$patch"; echo "version: $version+$build_number"
 
     flutter upgrade
+    flutter .
     cd android
     ./gradlew --refresh-dependencies
     
@@ -123,6 +124,19 @@ We need to two steps to use this package.
 # LICENSE!
 
 Dropdown Searchable list is [MIT-licensed](https://github.com/AmirHome/listview_infinite_pagination/LICENSE "MIT-licensed").
+
+## Additional information
+```
+    flutter pub upgrade --tighten
+
+    init_number=0; build_number=$(($(git rev-list HEAD --count) + init_number)); major=$((build_number / 2000)); minor=$(( (build_number / 20) % 10 )); patch=$((build_number % 20)); patch=$(printf "%02d" $patch); version="$major.$minor.$patch"; echo "version: $version+$build_number"
+
+    dart fix --apply && flutter analyze
+
+    flutter pub publish --dry-run
+
+    flutter pub publish --force
+```
 
 # Let us know!
 

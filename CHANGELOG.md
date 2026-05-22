@@ -1,3 +1,6 @@
+## 0.1.06
+* Enhance error handling and empty state display
+
 ## 0.1.02
 
 * Renew for Flutter last version
