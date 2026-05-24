@@ -5,9 +5,20 @@ class LoadMoreLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-        width: 20,
-        height: 20,
-        child: CircularProgressIndicator(strokeWidth: 2));
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            color: colorScheme.primary,
+            backgroundColor: colorScheme.surfaceContainerHighest,
+          ),
+        ),
+      ),
+    );
   }
 }

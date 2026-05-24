@@ -196,12 +196,16 @@ class ListviewInfinitePaginationState<T> extends State<ListviewInfinitePaginatio
   }
 
   Widget _buildEmptyView() {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: SizedBox(
-        height: 200,
-        child: Center(child: widget.onEmpty),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(child: widget.onEmpty),
+          ),
+        );
+      },
     );
   }
 

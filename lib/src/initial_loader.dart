@@ -5,10 +5,12 @@ class InitialLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const LinearProgressIndicator(
+    final colorScheme = Theme.of(context).colorScheme;
+    return LinearProgressIndicator(
       value: null,
-      backgroundColor: Colors.white,
-      // valueColor: AlwaysStoppedAnimation<Color>(PaletteColors.initial)
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      color: colorScheme.primary,
+      borderRadius: BorderRadius.circular(2),
     );
   }
 }
