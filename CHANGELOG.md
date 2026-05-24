@@ -1,3 +1,8 @@
+## 0.1.13
+
+* Compatible with Flutter 3.44.0
+* Material design version 3 improvements for better user experience
+
 ## 0.1.9
 
 * Make the pagination widget more reusable and safe
